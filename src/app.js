@@ -1,3 +1,17 @@
 import express from "express"
+import cors from "cors"
 
-export const app = express()
+const app = express()
+
+// Settings
+
+// Middelwares
+app.get(cors())
+app.get(express.json())
+
+// Routes
+app.get('/', (req, res) => {
+    res.send('Hello World')
+})
+
+export default app
