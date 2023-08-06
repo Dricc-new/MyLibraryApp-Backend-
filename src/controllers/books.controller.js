@@ -8,7 +8,7 @@ export async function indexBook(req, res) {
 // Create a book
 export async function storeBook(req, res) {
     const { title, author, description } = req.body
-    const newBook = new Book({
+    const newBook = new Book({  
         title: title,
         author: author,
         description: description,
@@ -18,8 +18,9 @@ export async function storeBook(req, res) {
 }
 
 // Get a book
-export function getBook(req, res) {
-    res.send('hi')
+export async function getBook(req, res) {
+    const book = await Book.findById(req.params.id)
+    res.json(book)
 }
 
 // Update a book
@@ -28,6 +29,7 @@ export function updateBook(req, res) {
 }
 
 // Remove a Book
-export function removeBook(req, res) {
-    res.send('hi')
+export async function removeBook(req, res) {
+    await Book.findByIdAndDelete(req.params.id)
+    res.json({message:'Book delete'})
 }
