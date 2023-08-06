@@ -7,8 +7,8 @@ const app = express()
 // Settings
 
 // Middelwares
-app.get(cors())
-app.get(express.json())
+app.use(cors())
+app.use(express.json())
 
 // Routes
 app.get('/', (req, res) => { res.send('Hello World')})
