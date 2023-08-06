@@ -1,30 +1,15 @@
 import { Router } from "express";
+import { getBook, indexBook, updateBook, removeBook, storeBook } from "../controllers/books.controller.js";
 
 const routerBooks = Router()
 
-// Get all books
-routerBooks.get('/books', (req, res) => {
+routerBooks.route('/books')
+    .get(indexBook)// Get all books
+    .post(storeBook)// Create a book
 
-})
-
-// Get one books
-routerBooks.get('/books/:id', (req, res) => {
-
-})
-
-// Create a book
-routerBooks.post('/books', (req, res) => {
-
-})
-
-// Update a book
-routerBooks.put('/books/:id', (req, res) => {
-
-})
-
-// Remove a book
-routerBooks.delete('/books/:id', (req, res) => {
-
-})
+routerBooks.route('/books/:id')
+    .get(getBook)// Get one books
+    .put(updateBook)// Update a book
+    .delete(removeBook)// Remove a book
 
 export default routerBooks
