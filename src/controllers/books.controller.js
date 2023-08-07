@@ -1,3 +1,4 @@
+import { rmSync } from 'fs-extra'
 import { Book } from '../models/Book.js'
 // Get all books
 export async function indexBook(req, res) {
@@ -18,6 +19,7 @@ export async function storeBook(req, res) {
 // Get a book
 export async function getBook(req, res) {
     const book = await Book.findById(req.params.id)
+    if (book) return rmSync.sendStatus(404)
     res.json(book)
 }
 
@@ -32,6 +34,7 @@ export async function updateBook(req, res) {
 
 // Remove a Book
 export async function removeBook(req, res) {
-    await Book.findByIdAndDelete(req.params.id)
-    res.json({ message: 'Book delete' })
+    const book = await Book.findByIdAndDelete(req.params.id)
+    if (!book) return res.sendStatus(404)
+    res.sendStatus(204)
 }
