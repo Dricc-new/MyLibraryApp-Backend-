@@ -1,5 +1,7 @@
-import { rmSync } from 'fs-extra'
 import { Book } from '../models/Book.js'
+import { deleteImage, uploadImage } from '../libs/cloudinary.js'
+import fs from 'fs/promises'
+
 // Get all books
 export async function indexBook(req, res) {
     try {
@@ -13,8 +15,18 @@ export async function indexBook(req, res) {
 // Create a book
 export async function storeBook(req, res) {
     const { title, author, description } = req.body
+    let image
+    if (req.files.image) {
+        const result = await uploadImage(req.files.image.tempFilePath)
+        await fs.rm(req.files.image.tempFilePath)
+        image = {
+            url: result.secure_url,
+            public_id: result.public_id
+        }
+    }
+
     const newBook = new Book({
-        title, author, description,
+        title, author, description, image
     })
     try {
         await newBook.save()
@@ -28,7 +40,7 @@ export async function storeBook(req, res) {
 export async function getBook(req, res) {
     try {
         const book = await Book.findById(req.params.id)
-        if (book) return rmSync.sendStatus(404)
+        if (book) return res.sendStatus(404)
         res.json(book)
     } catch (err) {
         return res.status(500).json(err.message)
@@ -53,6 +65,8 @@ export async function removeBook(req, res) {
     try {
         const book = await Book.findByIdAndDelete(req.params.id)
         if (!book) return res.sendStatus(404)
+        
+        if (book.image.public_id) await deleteImage(book.image.public_id)
         res.sendStatus(204)
     } catch (err) {
         return res.status(500).json(err)
