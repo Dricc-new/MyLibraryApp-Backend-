@@ -16,7 +16,7 @@ export async function indexBook(req, res) {
 export async function storeBook(req, res) {
     const { title, author, description } = req.body
     let image
-    if (req.files.image) {
+    if (req.files?.image) {
         // Upload image to cloudinary
         const result = await uploadImage(req.files.image.tempFilePath)
 
@@ -51,7 +51,7 @@ export async function getBook(req, res) {
         const book = await Book.findById(req.params.id)
 
         // If it doesn't find it, it returns a 404 error.
-        if (book) return res.sendStatus(404)
+        if (!book) return res.sendStatus(404)
         res.json(book)
     } catch (err) {
         return res.status(500).json(err.message)
